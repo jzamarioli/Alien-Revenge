@@ -6,12 +6,15 @@ class Mothership {
         this.y = 60; // Near the top
         this.image = images['mothership'];
         this.markedForDeletion = false;
-        this.speed = MOTHERSHIP_SPEED * (1 + (gameState.round - 1) * 0.1);
+        this.speed = MOTHERSHIP_SPEED + (gameState.round);
     }
 
     update(deltaTime) {
+        // Normalize speed based on frame time (60fps baseline)
+        const timeScale = deltaTime / 16.66;
+
         // Move left
-        this.x -= this.speed;
+        this.x -= this.speed * timeScale;
 
         // Remove if off-screen left
         if (this.x + this.width < 0) {
