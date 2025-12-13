@@ -60,7 +60,7 @@ class Player {
                 this.shieldCooldownTimer = SHIELD_COOLDOWN;
             } else if (this.shieldCooldownTimer > 0) {
                 // Feedback for trying to use shield during cooldown
-                this.cooldownFeedbackTimer = 2000;
+                this.cooldownFeedbackTimer = 1000;
             }
         }
 
