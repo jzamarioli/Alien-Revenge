@@ -220,10 +220,11 @@ function checkCollisions() {
             }
         }
 
-        if (alien.x < player.x + player.width &&
-            alien.x + alien.width > player.x &&
-            alien.y < player.y + player.height &&
-            alien.y + alien.height > player.y) {
+        // Tightened Hitbox for Player (paddings)
+        if (alien.x < player.x + player.width - 25 &&
+            alien.x + alien.width > player.x + 25 &&
+            alien.y < player.y + player.height - 20 &&
+            alien.y + alien.height > player.y + 20) {
             alien.markedForDeletion = true;
             explosions.push(new Explosion(player.x + player.width / 2, player.y + player.height / 2, 'white'));
             handlePlayerHit();
@@ -398,7 +399,17 @@ function nextRound() {
 
 // Start Button
 document.getElementById('start-btn').addEventListener('click', () => {
-    document.getElementById('start-screen').classList.add('hidden');
+    const startScreen = document.getElementById('start-screen');
+    startScreen.classList.add('hidden');
+    // Reset Game Over styles so next time main menu (if we used it) would be normal, 
+    // although strictly speaking we only show Start Screen either as Main or Game Over.
+    // But good to clean up.
+    startScreen.classList.remove('no-background');
+    startScreen.querySelector('p').classList.remove('hidden'); // Show instructions again if needed for next time? 
+    // Wait, if it's "Play Again", we go straight to game. 
+    // If we reload or go back to menu?
+    // The requirement says "Play Again" button.
+
     initGame();
     requestAnimationFrame(gameLoop);
 });
