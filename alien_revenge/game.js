@@ -15,10 +15,16 @@ function loadImage(key, src) {
 
 function initGame() {
     gameState.score = 0;
-    gameState.round = 1;
+    gameState.round = 3;
     gameState.lives = PLAYER_LIVES;
     updateScore();
     updateLives();
+
+    updateLives();
+
+    // Show Game UI
+    document.getElementById('score-display').classList.remove('hidden');
+    document.getElementById('lives-display').classList.remove('hidden');
 
     // Assets are guaranteed loaded now
     player = new Player();
@@ -42,6 +48,10 @@ function initGame() {
 }
 
 async function startGame() {
+    // Hide Game UI Initially
+    document.getElementById('score-display').classList.add('hidden');
+    document.getElementById('lives-display').classList.add('hidden');
+
     const assetsToLoad = [
         { key: 'background', src: 'background.png' },
         { key: 'spaceship', src: 'spaceship.png' },
@@ -96,7 +106,7 @@ function spawnAliens() {
     const rows = 3;
     const cols = 5;
     const startX = GAME_WIDTH / 2;
-    const startY = 200;
+    const startY = 250; // Moved down from 200 as requested
 
     for (let i = 0; i < 15; i++) {
         // Start center, fan out logic handled in update? 
@@ -179,6 +189,7 @@ function checkCollisions() {
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < 80 + bullet.radius) { // 80 is shield radius
                 bullet.markedForDeletion = true;
+                explosions.push(new Explosion(bullet.x, bullet.y, 'white')); // Effect on shield hit
                 return;
             }
         }
@@ -204,6 +215,7 @@ function checkCollisions() {
             const dist = Math.sqrt(dx * dx + dy * dy);
             if (dist < 80 + 40) { // Shield radius + approx alien radius
                 alien.markedForDeletion = true;
+                explosions.push(new Explosion(alien.x + alien.width / 2, alien.y + alien.height / 2, 'orange'));
                 // Game Prompt: "If aliens touch the shield, they will be destroyed."
             }
         }
@@ -221,14 +233,27 @@ function checkCollisions() {
 
 function endGame() {
     gameState.state = 'GAME_OVER';
-    showMessage("GAME OVER", 0);
-    document.getElementById('start-screen').parentElement.querySelector('#start-btn').innerText = "PLAY AGAIN";
-    document.getElementById('high-score-display').classList.remove('hidden'); // Show again
-    setTimeout(() => {
-        document.getElementById('start-screen').classList.remove('hidden');
-        document.getElementById('message-overlay').classList.add('hidden');
-        document.querySelector('.canvas-container').classList.remove('playing'); // Optional visual reset
-    }, 3000);
+
+    // Clear all entities to ensure clean background
+    aliens = [];
+    alienBullets = [];
+    player.bullets = [];
+    explosions = [];
+    mothership = null;
+
+    // UI Updates
+    const startScreen = document.getElementById('start-screen');
+    startScreen.querySelector('h1').innerText = "GAME OVER";
+    startScreen.querySelector('p').classList.add('hidden'); // Hide instructions text
+    startScreen.classList.add('no-background'); // Transparent background for Game Over
+
+    document.getElementById('lives-display').classList.add('hidden'); // Hide lives on Game Over
+
+    document.getElementById('start-btn').innerText = "PLAY AGAIN";
+    document.getElementById('high-score-display').classList.remove('hidden');
+
+    startScreen.classList.remove('hidden');
+    document.getElementById('message-overlay').classList.add('hidden');
 }
 
 function handlePlayerHit() {
@@ -238,10 +263,8 @@ function handlePlayerHit() {
     if (gameState.lives <= 0) {
         endGame();
     } else {
-        // Reset player position or provide feedback
-        player.x = GAME_WIDTH / 2 - player.width / 2;
-        player.y = GAME_HEIGHT - 100;
-        // showMessage("HIT! RESPAWNING...", 1000);
+        player.startRespawn();
+        // showMessage("HIT! RESPAWNING...", 1000); // Optional
         // Clear all alien bullets to prevent spawn kill
         alienBullets = [];
     }
@@ -308,12 +331,12 @@ function gameLoop(timestamp) {
         }
 
         // Round Logic
-        if (aliens.length === 0) {
+        if (aliens.length === 0 && gameState.state === 'PLAYING') {
             nextRound();
         }
     }
 
-    if (gameState.state === 'PLAYING' || gameState.state === 'ROUND_TRANSITION') {
+    if (gameState.state === 'PLAYING' || gameState.state === 'ROUND_TRANSITION' || gameState.state === 'GAME_OVER') {
         requestAnimationFrame(gameLoop);
     }
 }

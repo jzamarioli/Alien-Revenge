@@ -6,7 +6,7 @@ class Mothership {
         this.y = 60; // Near the top
         this.image = images['mothership'];
         this.markedForDeletion = false;
-        this.speed = MOTHERSHIP_SPEED;
+        this.speed = MOTHERSHIP_SPEED * (1 + (gameState.round - 1) * 0.1);
     }
 
     update(deltaTime) {

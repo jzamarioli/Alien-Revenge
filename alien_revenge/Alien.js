@@ -68,10 +68,12 @@ class Alien {
             }
         }
 
-        // Shoot randomly (Higher chance if diving)
-        let shootChance = (this.state === 'DIVE' ? 0.02 : 0.002 * gameState.round) * timeScale;
-        if (Math.random() < shootChance) {
-            this.bullets.push(new Bullet(this.x + this.width / 2, this.y + this.height, 1, true));
+        // Shoot randomly (Higher chance if diving) - But only if player is active
+        if (!player.isRespawning && !player.isReappearing) {
+            let shootChance = (this.state === 'DIVE' ? 0.02 : 0.002 * gameState.round) * timeScale;
+            if (Math.random() < shootChance) {
+                this.bullets.push(new Bullet(this.x + this.width / 2, this.y + this.height, 1, true));
+            }
         }
 
     }
