@@ -109,7 +109,7 @@ function updateScore() {
     document.getElementById('score').innerText = gameState.score;
     if (gameState.score > highScore) {
         highScore = gameState.score;
-        localStorage.setItem('phoenixHighScore', highScore);
+        localStorage.setItem('alienRevengeHighScore', highScore);
         document.getElementById('high-score').innerText = highScore;
     }
 }

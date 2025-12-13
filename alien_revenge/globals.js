@@ -19,7 +19,7 @@ var gameState = {
     activeDiveInProgress: false
 };
 
-var highScore = localStorage.getItem('phoenixHighScore') || 0;
+var highScore = localStorage.getItem('alienRevengeHighScore') || 0;
 
 var bgImage = null;
 var playerImage = null;
