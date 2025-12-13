@@ -89,6 +89,15 @@ canvas {
     backdrop-filter: none !important;
 }
 
+.game-over-pos {
+    justify-content: flex-start !important;
+    padding-top: 8%;
+}
+
+.game-over-pos h1 {
+    margin-bottom: 60px;
+}
+
 h1 {
     font-size: 80px;
     margin-bottom: 20px;
