@@ -16,6 +16,7 @@ class Bullet {
     }
 
     draw(ctx) {
+        ctx.save();
         if (this.isEnemy) {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -26,8 +27,9 @@ class Bullet {
         } else {
             // Player bullet: White Rectangular
             ctx.fillStyle = '#ffffff';
-            ctx.shadowBlur = 0;
+            // ctx.shadowBlur = 0; // Not needed with save/restore
             ctx.fillRect(this.x - 2, this.y - 10, 4, 20);
         }
+        ctx.restore();
     }
 }
