@@ -78,8 +78,8 @@ canvas {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.3);
+    /* 0.3 opacity for better visibility */
     pointer-events: auto;
     z-index: 10;
 }
@@ -90,7 +90,7 @@ canvas {
 }
 
 h1 {
-    font-size: 80px;
+    font-size: 60px;
     margin-bottom: 20px;
     background: linear-gradient(to bottom, #fff, #aaa);
     -webkit-background-clip: text;

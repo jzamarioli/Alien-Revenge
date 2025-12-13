@@ -20,7 +20,9 @@ function initGame() {
     updateScore();
     updateLives();
 
-    updateLives();
+    // Set background for current round
+    bgImage = images['background' + gameState.round];
+    window.bgImage = bgImage;
 
     // Show Game UI
     document.getElementById('score-display').classList.remove('hidden');
@@ -53,7 +55,11 @@ async function startGame() {
     document.getElementById('lives-display').classList.add('hidden');
 
     const assetsToLoad = [
-        { key: 'background', src: 'background.png' },
+        { key: 'background1', src: 'background1.png' },
+        { key: 'background2', src: 'background2.png' },
+        { key: 'background3', src: 'background3.png' },
+        { key: 'background4', src: 'background4.png' },
+        { key: 'background5', src: 'background5.png' },
         { key: 'spaceship', src: 'spaceship.png' },
         { key: 'alien1', src: 'alien1.png' },
         { key: 'alien2', src: 'alien2.png' },
@@ -67,7 +73,7 @@ async function startGame() {
         await Promise.all(assetsToLoad.map(a => loadImage(a.key, a.src)));
 
         // Global refs update
-        window.bgImage = images['background'];
+        window.bgImage = images['background1'];
         window.playerImage = images['spaceship'];
 
         // Update global vars
@@ -279,21 +285,19 @@ function gameLoop(timestamp) {
     // Draw Background
     ctx.drawImage(bgImage, 0, 0, GAME_WIDTH, GAME_HEIGHT);
 
+    // Update game objects only when playing
     if (gameState.state === 'PLAYING') {
         player.update(deltaTime);
-        player.draw(ctx);
 
         // Manage Alien Bullets independently
         alienBullets.forEach(b => {
             b.update(deltaTime);
-            b.draw(ctx);
         });
         alienBullets = alienBullets.filter(b => !b.markedForDeletion);
 
         // Explosions
         explosions.forEach(exp => {
             exp.update();
-            exp.draw(ctx);
         });
         explosions = explosions.filter(exp => !exp.markedForDeletion);
 
@@ -301,7 +305,6 @@ function gameLoop(timestamp) {
 
         aliens.forEach(alien => {
             alien.update(deltaTime);
-            alien.draw(ctx);
             // Collect bullets
             while (alien.bullets.length > 0) {
                 alienBullets.push(alien.bullets.pop());
@@ -316,15 +319,12 @@ function gameLoop(timestamp) {
         // Mothership Logic
         if (!mothership) {
             gameState.mothershipTimer += deltaTime;
-            // Spawn every 10-20 seconds (random)
-            // Just doing fixed 15s for now or small random
             if (gameState.mothershipTimer > 15000) {
                 mothership = new Mothership();
                 gameState.mothershipTimer = 0;
             }
         } else {
             mothership.update(deltaTime);
-            mothership.draw(ctx);
             if (mothership.markedForDeletion) {
                 mothership = null;
             }
@@ -336,7 +336,32 @@ function gameLoop(timestamp) {
         }
     }
 
-    if (gameState.state === 'PLAYING' || gameState.state === 'ROUND_TRANSITION' || gameState.state === 'GAME_OVER') {
+    // Draw game objects when playing OR paused
+    if (gameState.state === 'PLAYING' || gameState.state === 'PAUSED') {
+        player.draw(ctx);
+
+        // Draw bullets
+        alienBullets.forEach(b => {
+            b.draw(ctx);
+        });
+
+        // Draw explosions
+        explosions.forEach(exp => {
+            exp.draw(ctx);
+        });
+
+        // Draw aliens
+        aliens.forEach(alien => {
+            alien.draw(ctx);
+        });
+
+        // Draw mothership
+        if (mothership) {
+            mothership.draw(ctx);
+        }
+    }
+
+    if (gameState.state === 'PLAYING' || gameState.state === 'ROUND_TRANSITION' || gameState.state === 'GAME_OVER' || gameState.state === 'PAUSED') {
         requestAnimationFrame(gameLoop);
     }
 }
@@ -393,6 +418,10 @@ function nextRound() {
 
         setTimeout(() => {
             gameState.round++;
+            // Update background for new round
+            bgImage = images['background' + gameState.round] || images['background1'];
+            window.bgImage = bgImage;
+
             showMessage(`ROUND ${gameState.round}`, 3000);
             setTimeout(() => {
                 spawnAliens();
