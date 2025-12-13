@@ -51,6 +51,10 @@ class Player {
         if (input.isDown('Space') && this.shotTimer >= 1000) {
             this.bullets.push(new Bullet(this.x + this.width / 2 - 2, this.y, -1)); // Up, centered-ish
             this.shotTimer = 0;
+            // Play laser sound effect
+            if (typeof soundEffects !== 'undefined') {
+                soundEffects.playLaserSound();
+            }
         }
 
         if (input.isDown('ControlLeft') || input.isDown('ControlRight')) {
@@ -58,6 +62,10 @@ class Player {
                 this.shieldActive = true;
                 this.shieldTimer = SHIELD_DURATION;
                 this.shieldCooldownTimer = SHIELD_COOLDOWN;
+                // Start shield sound
+                if (typeof soundEffects !== 'undefined') {
+                    soundEffects.startShieldSound();
+                }
             } else if (this.shieldCooldownTimer > 0) {
                 // Feedback for trying to use shield during cooldown
                 this.cooldownFeedbackTimer = 1000;
@@ -72,6 +80,10 @@ class Player {
             this.shieldTimer -= deltaTime;
             if (this.shieldTimer <= 0) {
                 this.shieldActive = false;
+                // Stop shield sound
+                if (typeof soundEffects !== 'undefined') {
+                    soundEffects.stopShieldSound();
+                }
             }
         }
 

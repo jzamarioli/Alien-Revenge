@@ -40,12 +40,16 @@ function initGame() {
     gameState.state = 'ROUND_TRANSITION'; // Wait for banner
     // gameState.lastTime = performance.now(); // Will reset when playing starts
 
-    showMessage(`ROUND ${gameState.round}`, 3000); // 3 seconds banner
+    showMessage(gameState.round === MAX_ROUNDS ? 'FINAL ROUND' : `ROUND ${gameState.round}`, 3000); // 3 seconds banner
 
     setTimeout(() => {
         spawnAliens();
         gameState.state = 'PLAYING';
         gameState.lastTime = performance.now();
+        // Start background music
+        if (typeof soundEffects !== 'undefined') {
+            soundEffects.startBackgroundMusic();
+        }
     }, 3000); // Start after banner
 }
 
@@ -164,6 +168,10 @@ function checkCollisions() {
                     bullet.markedForDeletion = true;
                     gameState.score += 10;
                     explosions.push(new Explosion(alien.x + alien.width / 2, alien.y + alien.height / 2, 'orange'));
+                    // Play explosion sound
+                    if (typeof soundEffects !== 'undefined') {
+                        soundEffects.playExplosionSound();
+                    }
                     updateScore();
                 }
             }
@@ -205,6 +213,10 @@ function checkCollisions() {
             // Hit!
             bullet.markedForDeletion = true;
             explosions.push(new Explosion(player.x + player.width / 2, player.y + player.height / 2, 'white'));
+            // Play player death sound
+            if (typeof soundEffects !== 'undefined') {
+                soundEffects.playPlayerDeathSound();
+            }
             handlePlayerHit();
         }
     });
@@ -232,6 +244,10 @@ function checkCollisions() {
             alien.y + alien.height > player.y + 20) {
             alien.markedForDeletion = true;
             explosions.push(new Explosion(player.x + player.width / 2, player.y + player.height / 2, 'white'));
+            // Play player death sound
+            if (typeof soundEffects !== 'undefined') {
+                soundEffects.playPlayerDeathSound();
+            }
             handlePlayerHit();
         }
     });
@@ -239,6 +255,11 @@ function checkCollisions() {
 
 function endGame() {
     gameState.state = 'GAME_OVER';
+
+    // Stop background music
+    if (typeof soundEffects !== 'undefined') {
+        soundEffects.stopBackgroundMusic();
+    }
 
     // Clear all entities to ensure clean background
     aliens = [];
@@ -372,6 +393,10 @@ function togglePause(mode) {
 
     if (gameState.state === 'PLAYING') {
         gameState.state = 'PAUSED';
+        // Stop background music when paused
+        if (typeof soundEffects !== 'undefined') {
+            soundEffects.stopBackgroundMusic();
+        }
         if (mode === 'quit') {
             quitModal.classList.remove('hidden');
         } else {
@@ -382,6 +407,10 @@ function togglePause(mode) {
         quitModal.classList.add('hidden');
         pauseModal.classList.add('hidden');
         gameState.lastTime = performance.now();
+        // Restart background music when unpaused
+        if (typeof soundEffects !== 'undefined') {
+            soundEffects.startBackgroundMusic();
+        }
         requestAnimationFrame(gameLoop);
     }
 }
@@ -421,8 +450,7 @@ function nextRound() {
             // Update background for new round
             bgImage = images['background' + gameState.round] || images['background1'];
             window.bgImage = bgImage;
-
-            showMessage(`ROUND ${gameState.round}`, 3000);
+            showMessage(gameState.round === MAX_ROUNDS ? 'FINAL ROUND' : `ROUND ${gameState.round}`, 3000);
             setTimeout(() => {
                 spawnAliens();
                 gameState.state = 'PLAYING';
