@@ -16,11 +16,17 @@ function loadImage(key, src) {
 function initGame() {
     gameState.score = 0;
     gameState.round = 1;
+    gameState.lives = PLAYER_LIVES;
     updateScore();
+    updateLives();
+
     // Assets are guaranteed loaded now
     player = new Player();
     aliens = [];
     alienBullets = [];
+    explosions = [];
+    mothership = null;
+    gameState.mothershipTimer = 0;
     document.getElementById('high-score-display').classList.add('hidden'); // Hide during game
     // spawnAliens(); // Moving to timeout
     gameState.state = 'ROUND_TRANSITION'; // Wait for banner
@@ -43,7 +49,8 @@ async function startGame() {
         { key: 'alien2', src: 'alien2.png' },
         { key: 'alien3', src: 'alien3.png' },
         { key: 'alien4', src: 'alien4.png' },
-        { key: 'alien5', src: 'alien5.png' }
+        { key: 'alien5', src: 'alien5.png' },
+        { key: 'mothership', src: 'mothership.png' }
     ];
 
     try {
@@ -114,6 +121,10 @@ function updateScore() {
     }
 }
 
+function updateLives() {
+    document.getElementById('lives').innerText = gameState.lives;
+}
+
 function showMessage(text, duration) {
     const overlay = document.getElementById('message-overlay');
     const msgText = document.getElementById('message-text');
@@ -137,10 +148,24 @@ function checkCollisions() {
                     alien.markedForDeletion = true;
                     bullet.markedForDeletion = true;
                     gameState.score += 10;
+                    explosions.push(new Explosion(alien.x + alien.width / 2, alien.y + alien.height / 2, 'orange'));
                     updateScore();
                 }
             }
         });
+
+        // Check Mothership Collision
+        if (mothership && !mothership.markedForDeletion && !bullet.markedForDeletion) {
+            if (bullet.x > mothership.x && bullet.x < mothership.x + mothership.width &&
+                bullet.y > mothership.y && bullet.y < mothership.y + mothership.height) {
+                mothership.markedForDeletion = true;
+                bullet.markedForDeletion = true;
+                gameState.score += 50;
+                explosions.push(new Explosion(mothership.x + mothership.width / 2, mothership.y + mothership.height / 2, 'red'));
+                updateScore();
+                mothership = null; // Immediate cleanup
+            }
+        }
     });
 
     // Alien Bullets hitting Player or Shield
@@ -162,7 +187,9 @@ function checkCollisions() {
         if (bullet.x > player.x + 20 && bullet.x < player.x + player.width - 20 &&
             bullet.y > player.y + 20 && bullet.y < player.y + player.height - 20) {
             // Hit!
-            endGame();
+            bullet.markedForDeletion = true;
+            explosions.push(new Explosion(player.x + player.width / 2, player.y + player.height / 2, 'white'));
+            handlePlayerHit();
         }
     });
 
@@ -185,7 +212,9 @@ function checkCollisions() {
             alien.x + alien.width > player.x &&
             alien.y < player.y + player.height &&
             alien.y + alien.height > player.y) {
-            endGame();
+            alien.markedForDeletion = true;
+            explosions.push(new Explosion(player.x + player.width / 2, player.y + player.height / 2, 'white'));
+            handlePlayerHit();
         }
     });
 }
@@ -198,7 +227,24 @@ function endGame() {
     setTimeout(() => {
         document.getElementById('start-screen').classList.remove('hidden');
         document.getElementById('message-overlay').classList.add('hidden');
+        document.querySelector('.canvas-container').classList.remove('playing'); // Optional visual reset
     }, 3000);
+}
+
+function handlePlayerHit() {
+    gameState.lives--;
+    updateLives();
+
+    if (gameState.lives <= 0) {
+        endGame();
+    } else {
+        // Reset player position or provide feedback
+        player.x = GAME_WIDTH / 2 - player.width / 2;
+        player.y = GAME_HEIGHT - 100;
+        // showMessage("HIT! RESPAWNING...", 1000);
+        // Clear all alien bullets to prevent spawn kill
+        alienBullets = [];
+    }
 }
 
 function gameLoop(timestamp) {
@@ -221,6 +267,13 @@ function gameLoop(timestamp) {
         });
         alienBullets = alienBullets.filter(b => !b.markedForDeletion);
 
+        // Explosions
+        explosions.forEach(exp => {
+            exp.update();
+            exp.draw(ctx);
+        });
+        explosions = explosions.filter(exp => !exp.markedForDeletion);
+
         gameState.activeDiveInProgress = aliens.some(a => a.state === 'DIVE' || a.state === 'RETURN');
 
         aliens.forEach(alien => {
@@ -236,6 +289,23 @@ function gameLoop(timestamp) {
         aliens = aliens.filter(a => !a.markedForDeletion);
 
         checkCollisions();
+
+        // Mothership Logic
+        if (!mothership) {
+            gameState.mothershipTimer += deltaTime;
+            // Spawn every 10-20 seconds (random)
+            // Just doing fixed 15s for now or small random
+            if (gameState.mothershipTimer > 15000) {
+                mothership = new Mothership();
+                gameState.mothershipTimer = 0;
+            }
+        } else {
+            mothership.update(deltaTime);
+            mothership.draw(ctx);
+            if (mothership.markedForDeletion) {
+                mothership = null;
+            }
+        }
 
         // Round Logic
         if (aliens.length === 0) {

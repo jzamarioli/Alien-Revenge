@@ -6,11 +6,14 @@ var SHIELD_DURATION = 6000; // 6 seconds
 var SHIELD_COOLDOWN = 10000; // 10 seconds
 var BULLET_SPEED = 17.25; // Increased by 15%
 var ALIEN_BULLET_SPEED = 8;
+var MOTHERSHIP_SPEED = 5;
 var MAX_ROUNDS = 5;
+var PLAYER_LIVES = 3;
 
 // Variables that need to be shared
 var gameState = {
     state: 'MENU',
+    lives: PLAYER_LIVES,
     score: 0,
     round: 1,
     lastTime: 0,
@@ -26,7 +29,9 @@ var playerImage = null;
 var alienSprites = {};
 
 var player;
+var mothership = null;
 var aliens = [];
 var alienBullets = [];
+var explosions = [];
 
 var images = {};
