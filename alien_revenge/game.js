@@ -15,7 +15,7 @@ function loadImage(key, src) {
 
 function initGame() {
     gameState.score = 0;
-    gameState.round = 3;
+    gameState.round = 1;
     gameState.lives = PLAYER_LIVES;
     updateScore();
     updateLives();
@@ -89,6 +89,7 @@ async function startGame() {
 
         // Init High Score Display
         document.getElementById('high-score').innerText = highScore;
+        document.getElementById('high-score-display').classList.remove('hidden'); // Always show high score
 
         // Start Loop
         requestAnimationFrame(gameLoop);
@@ -103,20 +104,18 @@ startGame();
 
 function spawnAliens() {
     aliens = [];
-    const rows = 3;
-    const cols = 5;
-    const startX = GAME_WIDTH / 2;
-    const startY = 250; // Moved down from 200 as requested
+    const rows = 5;
+    const cols = 7;
+    const spacingX = 200; // Wider spacing
+    const totalWidth = (cols - 1) * spacingX;
+    const startX = (GAME_WIDTH - totalWidth) / 2;
+    const startY = 250;
 
-    for (let i = 0; i < 15; i++) {
-        // Start center, fan out logic handled in update? 
-        // No, let's position them in a grid but they move from center.
-        // Actually prompt says "starting at the center of the screen and moving horizontally and vertically"
-        // I will initialize them in a grid but visually they might disperse.
-        // Let's stick to a grid layout for "home positions" (baseX, baseY)
+    for (let i = 0; i < 32; i++) {
+        // Position in grid
         let row = Math.floor(i / cols);
         let col = i % cols;
-        let x = (GAME_WIDTH / 2 - (cols * 100) / 2) + col * 120;
+        let x = startX + col * spacingX;
         let y = 100 + row * 100;
         aliens.push(new Alien(x, y));
     }
@@ -372,29 +371,38 @@ document.getElementById('cancel-quit-btn').addEventListener('click', () => {
 
 function nextRound() {
     gameState.state = 'ROUND_TRANSITION';
-    showMessage(`ROUND ${gameState.round} COMPLETED`, 4000);
 
-    setTimeout(() => {
-        gameState.round++;
-        if (gameState.round > MAX_ROUNDS) {
-            // Victory
-            gameState.state = 'GAME_OVER';
-            showMessage("MISSION ACCOMPLISHED!", 0);
-            setTimeout(() => {
-                document.getElementById('start-screen').classList.remove('hidden');
-                document.getElementById('message-overlay').classList.add('hidden');
-            }, 3000);
-        } else {
+    if (gameState.round === MAX_ROUNDS) {
+        // Victory immediately
+        gameState.state = 'GAME_OVER';
+        showMessage("MISSION ACCOMPLISHED!", 0);
+        setTimeout(() => {
+            // Go to start screen (Victory state)
+            const startScreen = document.getElementById('start-screen');
+            startScreen.classList.remove('hidden');
+            startScreen.classList.add('no-background');
+            startScreen.querySelector('h1').innerText = "VICTORY";
+            startScreen.querySelector('p').classList.add('hidden');
+            document.getElementById('start-btn').innerText = "PLAY AGAIN";
+            document.getElementById('high-score-display').classList.remove('hidden'); // Show High Score on Victory
+            document.getElementById('message-overlay').classList.add('hidden');
+        }, 4000);
+    } else {
+        // Normal round transition
+        showMessage(`ROUND ${gameState.round} COMPLETED`, 4000);
+
+        setTimeout(() => {
+            gameState.round++;
             showMessage(`ROUND ${gameState.round}`, 3000);
             setTimeout(() => {
                 spawnAliens();
                 gameState.state = 'PLAYING';
-                requestAnimationFrame(gameLoop); // Restart loop if it stopped
+                requestAnimationFrame(gameLoop);
             }, 3000);
-        }
-    }, 4000);
+        }, 4000);
+    }
 
-    requestAnimationFrame(gameLoop); // Keep loop running for transition (maybe showing particles or just waiting)
+    requestAnimationFrame(gameLoop);
 }
 
 // Start Button
