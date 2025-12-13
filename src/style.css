@@ -1,0 +1,186 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #050505;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#game-container {
+    position: relative;
+    width: 100%;
+    max-width: 1920px;
+    aspect-ratio: 16/9;
+    box-shadow: 0 0 50px rgba(0, 150, 255, 0.2);
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #000;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 20;
+}
+
+#game-info {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 15;
+    /* Above .screen (10) */
+    pointer-events: none;
+}
+
+#score-display {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    left: auto;
+    font-size: 24px;
+    color: #00ffff;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    text-align: right;
+}
+
+#high-score-display {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+    color: #ff00ff;
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    /* 0.3 opacity for better visibility */
+    pointer-events: auto;
+    z-index: 10;
+}
+
+.no-background {
+    background: transparent !important;
+    backdrop-filter: none !important;
+}
+
+h1 {
+    font-size: 60px;
+    margin-bottom: 20px;
+    background: linear-gradient(to bottom, #fff, #aaa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+}
+
+p {
+    font-size: 20px;
+    margin-bottom: 50px;
+    color: #ccc;
+    letter-spacing: 2px;
+}
+
+.btn {
+    padding: 15px 40px;
+    font-size: 24px;
+    font-family: 'Orbitron', sans-serif;
+    color: #00ffff;
+    background: transparent;
+    border: 2px solid #00ffff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    margin: 10px;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.btn:hover {
+    background: rgba(0, 255, 255, 0.2);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+#messa.game-over-pos {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+#message-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    pointer-events: none;
+    z-index: 5;
+}
+
+#message-text {
+    font-size: 60px;
+    color: #ffcc00;
+    text-shadow: 0 0 20px rgba(255, 204, 0, 0.6);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px 40px;
+    border: 2px solid #ffcc00;
+    border-radius: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#lives-display {
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    font-size: 24px;
+    color: #00ff00;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+    text-align: left;
+}
+
+#quit-modal h1 {
+    font-size: 40px;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+#sound-status {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #00ff00;
+    font-size: 18px;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+    z-index: 15;
+    pointer-events: none;
+}
