@@ -3,7 +3,7 @@ class Player {
         this.width = 100;
         this.height = 100;
         this.x = GAME_WIDTH / 2 - this.width / 2;
-        this.y = GAME_HEIGHT - this.height - 50;
+        this.y = GAME_HEIGHT - this.height + 4;
         this.bullets = [];
         this.shieldActive = false;
         this.shieldTimer = 0;
@@ -24,7 +24,7 @@ class Player {
                 this.isReappearing = true;
                 this.reappearTimer = 1000; // 1 second fade in
                 this.x = GAME_WIDTH / 2 - this.width / 2;
-                this.y = GAME_HEIGHT - this.height - 50;
+                this.y = GAME_HEIGHT - this.height + 4;
             } else {
                 return; // Don't allow movement or shooting while completely invisible (waiting)
             }

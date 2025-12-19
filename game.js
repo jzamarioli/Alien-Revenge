@@ -15,7 +15,7 @@ function loadImage(key, src) {
 
 function initGame() {
     gameState.score = 0;
-    gameState.round = 1;
+    gameState.round = STARTING_ROUND;
     gameState.lives = PLAYER_LIVES;
     updateScore();
     updateLives();
@@ -35,7 +35,7 @@ function initGame() {
     explosions = [];
     floatingTexts = [];
     mothership = null;
-    gameState.mothershipTimer = 14000;
+    gameState.mothershipTimer = 0;
     document.getElementById('high-score-display').classList.add('hidden'); // Hide during game
     // spawnAliens(); // Moving to timeout
     gameState.state = 'ROUND_TRANSITION'; // Wait for banner
@@ -130,12 +130,12 @@ function spawnAliens() {
         let row = Math.floor(i / cols);
         let col = i % cols;
         let x = startX + col * spacingX;
-        let y = 100 + row * 100;
+        let y = 154 + row * 100;
 
         // Custom formation for Round 4: Star Formation
         if (gameState.round === 4) {
             const centerX = GAME_WIDTH / 2;
-            const centerY = 392; // Moved 5% lower (from 338) to prevent clipping
+            const centerY = 446; // Moved another 5% lower (total 10% from original)
             const numRays = 8;
             const aliensPerRay = 4;
             const rayIndex = i % numRays;
@@ -158,7 +158,7 @@ function spawnAliens() {
 
             // 30% more vertical spacing + deeper V
             const vOffset = Math.abs(col - centerCol) * 110;
-            y = (100 + row * 130 + vOffset) * 0.7;
+            y = (100 + row * 130 + vOffset) * 0.7 + 54;
         }
 
         if (gameState.round === 4 && (i === 26 || i === 30)) continue;

@@ -10,7 +10,7 @@ const MOTHERSHIP_SPEED = 5;
 const MAX_ROUNDS = 5;
 const PLAYER_LIVES = 3;
 const MOTHERSHIP_POINTS = 50;
-const STARTING_ROUND = 1;
+const STARTING_ROUND = 4;
 
 // Variables that need to be shared
 var gameState = {
