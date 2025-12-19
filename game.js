@@ -60,11 +60,11 @@ async function startGame() {
     document.getElementById('lives-display').classList.add('hidden');
 
     const assetsToLoad = [
-        { key: 'background1', src: 'assets/background1.png' },
-        { key: 'background2', src: 'assets/background2.png' },
-        { key: 'background3', src: 'assets/background3.png' },
-        { key: 'background4', src: 'assets/background4.png' },
-        { key: 'background5', src: 'assets/background5.png' },
+        { key: 'background1', src: 'assets/background1.jpg' },
+        { key: 'background2', src: 'assets/background2.jpg' },
+        { key: 'background3', src: 'assets/background3.jpg' },
+        { key: 'background4', src: 'assets/background4.jpg' },
+        { key: 'background5', src: 'assets/background5.jpg' },
         { key: 'spaceship', src: 'assets/spaceship.png' },
         { key: 'alien1', src: 'assets/alien1.png' },
         { key: 'alien2', src: 'assets/alien2.png' },
