@@ -66,9 +66,12 @@ class Player {
                 if (typeof soundEffects !== 'undefined') {
                     soundEffects.startShieldSound();
                 }
-            } else if (this.shieldCooldownTimer > 0) {
+            } else if (this.shieldCooldownTimer > 0 && !this.shieldActive) {
                 // Feedback for trying to use shield during cooldown
                 this.cooldownFeedbackTimer = 1000;
+                if (typeof soundEffects !== 'undefined') {
+                    soundEffects.playShieldCooldownSound();
+                }
             }
         }
 

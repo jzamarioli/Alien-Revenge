@@ -235,6 +235,31 @@ class SoundEffects {
         this.stopAlienMovementSound();
         this.stopShieldSound();
     }
+
+    playShieldCooldownSound() {
+        if (!this.enabled || !this.audioContext) return;
+
+        const now = this.audioContext.currentTime;
+
+        // Play two rapid, high-pitched pulses
+        for (let i = 0; i < 2; i++) {
+            const startTime = now + (i * 0.1);
+            const oscillator = this.audioContext.createOscillator();
+            const gainNode = this.audioContext.createGain();
+
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(1200, startTime);
+
+            gainNode.gain.setValueAtTime(0.06, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.05);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(this.audioContext.destination);
+
+            oscillator.start(startTime);
+            oscillator.stop(startTime + 0.05);
+        }
+    }
 }
 
 // Create global sound effects instance
