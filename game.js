@@ -145,7 +145,7 @@ function spawnAliens() {
             const distance = 120 + alienIndexOnRay * 110;
 
             x = centerX + Math.cos(angle) * distance * 1.5 - 40; // 1.5x horizontal stretch, -40 centering
-            y = centerY + Math.sin(angle) * distance - 40;
+            y = centerY + Math.sin(angle) * distance * 0.9 - 40;
         }
 
         // Custom formation for Round 5: 'V' shape & Improved Spacing
