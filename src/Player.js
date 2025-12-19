@@ -99,6 +99,54 @@ class Player {
         this.bullets = this.bullets.filter(b => !b.markedForDeletion);
     }
 
+    static initShields() {
+        if (Player.shieldNormalCanvas) return;
+
+        const size = 200; // Large enough for radius 80 + shadow
+        const center = size / 2;
+
+        // Normal Shield
+        Player.shieldNormalCanvas = document.createElement('canvas');
+        Player.shieldNormalCanvas.width = size;
+        Player.shieldNormalCanvas.height = size;
+        const ctxN = Player.shieldNormalCanvas.getContext('2d');
+        ctxN.beginPath();
+        ctxN.arc(center, center, 80, 0, Math.PI * 2);
+        ctxN.fillStyle = 'rgba(0, 255, 255, 0.3)';
+        ctxN.strokeStyle = '#00ffff';
+        ctxN.shadowBlur = 20;
+        ctxN.shadowColor = ctxN.strokeStyle;
+        ctxN.fill();
+        ctxN.lineWidth = 3;
+        ctxN.stroke();
+
+        // Warning Shield
+        Player.shieldWarningCanvas = document.createElement('canvas');
+        Player.shieldWarningCanvas.width = size;
+        Player.shieldWarningCanvas.height = size;
+        const ctxW = Player.shieldWarningCanvas.getContext('2d');
+        ctxW.beginPath();
+        ctxW.arc(center, center, 80, 0, Math.PI * 2);
+        ctxW.fillStyle = 'rgba(255, 0, 0, 0.2)';
+        ctxW.strokeStyle = '#ff00bf';
+        ctxW.shadowBlur = 20;
+        ctxW.shadowColor = ctxW.strokeStyle;
+        ctxW.fill();
+        ctxW.lineWidth = 3;
+        ctxW.stroke();
+
+        // Cooldown Shield (Outline Only)
+        Player.shieldCooldownCanvas = document.createElement('canvas');
+        Player.shieldCooldownCanvas.width = size;
+        Player.shieldCooldownCanvas.height = size;
+        const ctxC = Player.shieldCooldownCanvas.getContext('2d');
+        ctxC.beginPath();
+        ctxC.arc(center, center, 80, 0, Math.PI * 2);
+        ctxC.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        ctxC.lineWidth = 1;
+        ctxC.stroke();
+    }
+
     draw(ctx) {
         if (this.isRespawning) return; // Don't draw if waiting to respawn
 
@@ -109,38 +157,30 @@ class Player {
         }
 
         // Draw Shield
+        if (this.shieldActive || this.cooldownFeedbackTimer > 0) {
+            Player.initShields(); // Ensure canvases are ready
+        }
+
         if (this.shieldActive) {
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(this.x + this.width / 2, this.y + this.height / 2, 80, 0, Math.PI * 2);
+            const shieldImg = (this.shieldTimer < 2000 && Math.floor(Date.now() / 100) % 2 === 0)
+                ? Player.shieldWarningCanvas
+                : Player.shieldNormalCanvas;
 
-            // Warning Effect: Blink/Flicker when < 2 seconds
-            if (this.shieldTimer < 2000 && Math.floor(Date.now() / 100) % 2 === 0) {
-                ctx.fillStyle = 'rgba(255, 0, 0, 0.2)'; // Reddish warning
-                ctx.strokeStyle = '#ff00bf'; // Purpleish blink
-            } else {
-                ctx.fillStyle = 'rgba(0, 255, 255, 0.3)';
-                ctx.strokeStyle = '#00ffff';
-            }
-
-            ctx.shadowBlur = 20;
-            ctx.shadowColor = ctx.strokeStyle;
-            ctx.fill();
-            ctx.lineWidth = 3;
-            ctx.stroke();
-            ctx.restore();
+            ctx.drawImage(
+                shieldImg,
+                this.x + this.width / 2 - 100,
+                this.y + this.height / 2 - 100
+            );
         }
 
         // Cooldown Indicator (Rapid white circle) - Only if feedback active
         if (this.cooldownFeedbackTimer > 0) {
             if (Math.floor(Date.now() / 50) % 2 === 0) { // Fast blink (50ms)
-                ctx.save();
-                ctx.beginPath();
-                ctx.arc(this.x + this.width / 2, this.y + this.height / 2, 80, 0, Math.PI * 2);
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-                ctx.restore();
+                ctx.drawImage(
+                    Player.shieldCooldownCanvas,
+                    this.x + this.width / 2 - 100,
+                    this.y + this.height / 2 - 100
+                );
             }
         }
 
