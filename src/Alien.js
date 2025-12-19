@@ -26,16 +26,17 @@ class Alien {
 
         if (this.state === 'HOVER') {
             // Simple movement pattern: elliptical/bobbing
-            this.angle += 0.02 * (gameState.round) * timeScale;
-            this.x = this.baseX + Math.sin(this.angle) * 200;
-            // In Round 1, aliens move to right and left only (no vertical bobbing)
-            // In Round 4, aliens move diagonally (synced sin)
             let verticalBob;
             if (gameState.round === 1) {
+                this.angle += 0.02 * (gameState.round) * timeScale;
+                this.x = this.baseX + Math.sin(this.angle) * 200;
                 verticalBob = 0;
             } else if (gameState.round === 4) {
-                verticalBob = Math.sin(this.angle) * 150; // Diagonal sweeping
+                this.x = this.baseX + gameState.round4Offset;
+                verticalBob = 0; // No vertical movement in Round 4
             } else {
+                this.angle += 0.02 * (gameState.round) * timeScale;
+                this.x = this.baseX + Math.sin(this.angle) * 200;
                 verticalBob = Math.cos(this.angle * 2) * 50; // Standard bobbing
             }
             this.y = this.baseY + verticalBob;
@@ -66,7 +67,8 @@ class Alien {
             }
         } else if (this.state === 'RETURN') {
             // Fly back to formation
-            const dx = this.baseX - this.x;
+            const targetX = gameState.round === 4 ? this.baseX + gameState.round4Offset : this.baseX;
+            const dx = targetX - this.x;
             const dy = this.baseY - this.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
 

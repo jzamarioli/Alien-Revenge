@@ -22,7 +22,9 @@ var gameState = {
     lastTime: 0,
     roundTimer: 0,
     messageTimer: 0,
-    activeDiveInProgress: false
+    activeDiveInProgress: false,
+    round4Offset: 0,
+    round4Direction: 1
 };
 
 var highScore = localStorage.getItem('alienRevengeHighScore') || 0;

@@ -115,6 +115,8 @@ startGame();
 
 function spawnAliens() {
     aliens = [];
+    gameState.round4Offset = 0;
+    gameState.round4Direction = 1;
     const rows = 5;
     const cols = gameState.round === 1 ? 5 : 7;
     const spacingX = 200; // Wider spacing
@@ -129,22 +131,20 @@ function spawnAliens() {
         let x = startX + col * spacingX;
         let y = 100 + row * 100;
 
-        // Custom formation for Round 4: Inverted 'Y' shape
+        // Custom formation for Round 4: Star Formation
         if (gameState.round === 4) {
-            const centerCol = (cols - 1) / 2;
-            const centerX = startX + centerCol * spacingX;
-            if (i < 10) {
-                // Stem (Top portion)
-                x = centerX;
-                y = (50 + i * 60) * 0.5;
-            } else {
-                // Branches (Bottom portion)
-                const branchIdx = i - 10;
-                const side = branchIdx % 2 === 0 ? -1 : 1;
-                const depth = Math.floor(branchIdx / 2) + 1;
-                x = centerX + side * depth * 80;
-                y = ((50 + 9 * 60) + depth * 50) * 0.5;
-            }
+            const centerX = GAME_WIDTH / 2;
+            const centerY = 392; // Moved 5% lower (from 338) to prevent clipping
+            const numRays = 8;
+            const aliensPerRay = 4;
+            const rayIndex = i % numRays;
+            const alienIndexOnRay = Math.floor(i / numRays);
+
+            const angle = (rayIndex / numRays) * Math.PI * 2;
+            const distance = 120 + alienIndexOnRay * 110;
+
+            x = centerX + Math.cos(angle) * distance * 1.3 - 40; // 1.3x horizontal stretch, -40 centering
+            y = centerY + Math.sin(angle) * distance - 40;
         }
 
         // Custom formation for Round 5: 'V' shape & Vertical Shift
@@ -153,6 +153,8 @@ function spawnAliens() {
             const vOffset = Math.abs(col - centerCol) * 80; // Offset increases with distance from center
             y = (y + vOffset) * 0.8; // Move 20% higher (reducing Y by 20%)
         }
+
+        if (gameState.round === 4 && (i === 26 || i === 30)) continue;
 
         aliens.push(new Alien(x, y));
     }
@@ -340,7 +342,26 @@ function gameLoop(timestamp) {
 
     // Update game objects only when playing
     if (gameState.state === 'PLAYING') {
+        const timeScale = deltaTime / 16.66;
         player.update(deltaTime);
+
+        // Handle Round 4 formation movement
+        if (gameState.round === 4) {
+            const speed = 2.1 * timeScale;
+            const activeAliens = aliens.filter(a => a.state === 'HOVER');
+
+            if (activeAliens.length > 0) {
+                let minX = Math.min(...activeAliens.map(a => a.x));
+                let maxX = Math.max(...activeAliens.map(a => a.x + a.width));
+
+                if (minX <= GAME_WIDTH * 0.05 && gameState.round4Direction < 0) {
+                    gameState.round4Direction = 1;
+                } else if (maxX >= GAME_WIDTH * 0.95 && gameState.round4Direction > 0) {
+                    gameState.round4Direction = -1;
+                }
+            }
+            gameState.round4Offset += gameState.round4Direction * speed;
+        }
 
         // Manage Alien Bullets independently
         alienBullets.forEach(b => {
