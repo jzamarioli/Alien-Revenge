@@ -128,11 +128,29 @@ function spawnAliens() {
         let x = startX + col * spacingX;
         let y = 100 + row * 100;
 
-        // Custom formation for Round 4: 'V' shape
+        // Custom formation for Round 4: 'V' shape & Vertical Shift
         if (gameState.round === 4) {
             const centerCol = (cols - 1) / 2;
             const vOffset = Math.abs(col - centerCol) * 80; // Offset increases with distance from center
-            y += vOffset;
+            y = (y + vOffset) * 0.8; // Move 20% higher (reducing Y by 20%)
+        }
+
+        // Custom formation for Round 5: Inverted 'Y' shape
+        if (gameState.round === 5) {
+            const centerCol = (cols - 1) / 2;
+            const centerX = startX + centerCol * spacingX;
+            if (i < 10) {
+                // Stem (Top portion)
+                x = centerX;
+                y = (50 + i * 60) * 0.5;
+            } else {
+                // Branches (Bottom portion)
+                const branchIdx = i - 10;
+                const side = branchIdx % 2 === 0 ? -1 : 1;
+                const depth = Math.floor(branchIdx / 2) + 1;
+                x = centerX + side * depth * 80;
+                y = ((50 + 9 * 60) + depth * 50) * 0.5;
+            }
         }
 
         aliens.push(new Alien(x, y));
