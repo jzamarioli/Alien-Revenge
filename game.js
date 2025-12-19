@@ -60,18 +60,18 @@ async function startGame() {
     document.getElementById('lives-display').classList.add('hidden');
 
     const assetsToLoad = [
-        { key: 'background1', src: 'background1.png' },
-        { key: 'background2', src: 'background2.png' },
-        { key: 'background3', src: 'background3.png' },
-        { key: 'background4', src: 'background4.png' },
-        { key: 'background5', src: 'background5.png' },
-        { key: 'spaceship', src: 'spaceship.png' },
-        { key: 'alien1', src: 'alien1.png' },
-        { key: 'alien2', src: 'alien2.png' },
-        { key: 'alien3', src: 'alien3.png' },
-        { key: 'alien4', src: 'alien4.png' },
-        { key: 'alien5', src: 'alien5.png' },
-        { key: 'mothership', src: 'mothership.png' }
+        { key: 'background1', src: 'assets/background1.png' },
+        { key: 'background2', src: 'assets/background2.png' },
+        { key: 'background3', src: 'assets/background3.png' },
+        { key: 'background4', src: 'assets/background4.png' },
+        { key: 'background5', src: 'assets/background5.png' },
+        { key: 'spaceship', src: 'assets/spaceship.png' },
+        { key: 'alien1', src: 'assets/alien1.png' },
+        { key: 'alien2', src: 'assets/alien2.png' },
+        { key: 'alien3', src: 'assets/alien3.png' },
+        { key: 'alien4', src: 'assets/alien4.png' },
+        { key: 'alien5', src: 'assets/alien5.png' },
+        { key: 'mothership', src: 'assets/mothership.png' }
     ];
 
     try {

@@ -15,5 +15,5 @@ draw.rectangle([(25, 18), (28, 20)], fill=(255, 255, 0, 255))
 draw.rectangle([(35, 18), (38, 20)], fill=(255, 255, 0, 255))
 draw.rectangle([(45, 18), (48, 20)], fill=(255, 255, 0, 255))
 
-img.save('mothership.png')
+img.save('assets/mothership.png')
 print("mothership.png created")

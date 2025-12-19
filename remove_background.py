@@ -2,7 +2,7 @@ from PIL import Image
 import os
 import collections
 
-files = ['spaceship.png', 'alien1.png', 'alien2.png', 'alien3.png', 'alien4.png', 'alien5.png']
+files = ['assets/spaceship.png', 'assets/alien1.png', 'assets/alien2.png', 'assets/alien3.png', 'assets/alien4.png', 'assets/alien5.png']
 
 def distance(c1, c2):
     # Calculate Euclidean distance between two colors (ignoring alpha)
