@@ -29,7 +29,15 @@ class Alien {
             this.angle += 0.02 * (gameState.round) * timeScale;
             this.x = this.baseX + Math.sin(this.angle) * 200;
             // In Round 1, aliens move to right and left only (no vertical bobbing)
-            const verticalBob = (gameState.round === 1) ? 0 : Math.cos(this.angle * 2) * 50;
+            // In Round 4, aliens move diagonally (synced sin)
+            let verticalBob;
+            if (gameState.round === 1) {
+                verticalBob = 0;
+            } else if (gameState.round === 4) {
+                verticalBob = Math.sin(this.angle) * 150; // Diagonal sweeping
+            } else {
+                verticalBob = Math.cos(this.angle * 2) * 50; // Standard bobbing
+            }
             this.y = this.baseY + verticalBob;
 
             // Chance to dive (Round 3+)
