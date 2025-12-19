@@ -35,7 +35,11 @@ class Alien {
                 this.x = this.baseX + gameState.round4Offset;
                 verticalBob = 0; // No vertical movement in Round 4
             } else {
-                this.angle += 0.02 * (gameState.round) * timeScale;
+                let speedFactor = gameState.round;
+                // Reduce movement speed by 30% in Round 5
+                if (gameState.round === 5) speedFactor *= 0.7;
+
+                this.angle += 0.02 * speedFactor * timeScale;
                 this.x = this.baseX + Math.sin(this.angle) * 200;
                 verticalBob = Math.cos(this.angle * 2) * 50; // Standard bobbing
             }

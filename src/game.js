@@ -147,11 +147,17 @@ function spawnAliens() {
             y = centerY + Math.sin(angle) * distance - 40;
         }
 
-        // Custom formation for Round 5: 'V' shape & Vertical Shift
+        // Custom formation for Round 5: 'V' shape & Improved Spacing
         if (gameState.round === 5) {
             const centerCol = (cols - 1) / 2;
-            const vOffset = Math.abs(col - centerCol) * 80; // Offset increases with distance from center
-            y = (y + vOffset) * 0.8; // Move 20% higher (reducing Y by 20%)
+            const centerX = GAME_WIDTH / 2;
+
+            // 30% more horizontal spacing
+            x = centerX + (col - centerCol) * spacingX * 1.3;
+
+            // 30% more vertical spacing + deeper V
+            const vOffset = Math.abs(col - centerCol) * 110;
+            y = (100 + row * 130 + vOffset) * 0.7;
         }
 
         if (gameState.round === 4 && (i === 26 || i === 30)) continue;
@@ -202,6 +208,7 @@ function checkCollisions() {
                         soundEffects.playExplosionSound();
                     }
                     updateScore();
+                    player.shotTimer = 1000; // Allow immediate re-fire on hit
                 }
             }
         });
@@ -220,6 +227,7 @@ function checkCollisions() {
                 }
                 updateScore();
                 floatingTexts.push(new FloatingText(mothership.x + mothership.width / 2, mothership.y + mothership.height / 2, `+${gameState.mothershipPoints}`));
+                player.shotTimer = 1000; // Allow immediate re-fire on hit
                 mothership = null; // Immediate cleanup
             }
         }
