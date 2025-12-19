@@ -35,7 +35,7 @@ function initGame() {
     explosions = [];
     floatingTexts = [];
     mothership = null;
-    gameState.mothershipTimer = 0;
+    gameState.mothershipTimer = 14000;
     document.getElementById('high-score-display').classList.add('hidden'); // Hide during game
     // spawnAliens(); // Moving to timeout
     gameState.state = 'ROUND_TRANSITION'; // Wait for banner

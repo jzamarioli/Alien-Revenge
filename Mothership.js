@@ -3,7 +3,7 @@ class Mothership {
         this.width = 128;
         this.height = 64;
         this.x = GAME_WIDTH; // Start off-screen right
-        this.y = 60; // Near the top
+        this.y = 38; // Near the top, moved 2% higher to avoid overlap
         this.image = images['mothership'];
         this.markedForDeletion = false;
         this.speed = MOTHERSHIP_SPEED + (gameState.round);
