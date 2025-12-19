@@ -1,16 +1,16 @@
 console.log("globals.js loaded");
-var GAME_WIDTH = 1920;
-var GAME_HEIGHT = 1080;
-var PLAYER_SPEED = 10;
-var SHIELD_DURATION = 6000; // 6 seconds
-var SHIELD_COOLDOWN = 20000; // 20 seconds
-var BULLET_SPEED = 17.25;
-var ALIEN_BULLET_SPEED = 6;
-var MOTHERSHIP_SPEED = 5;
-var MAX_ROUNDS = 5;
-var PLAYER_LIVES = 3;
-var MOTHERSHIP_POINTS = 50;
-var STARTING_ROUND = 1;
+const GAME_WIDTH = 1920;
+const GAME_HEIGHT = 1080;
+const PLAYER_SPEED = 10;
+const SHIELD_DURATION = 6000; // 6 seconds
+const SHIELD_COOLDOWN = 20000; // 20 seconds
+const BULLET_SPEED = 17.25;
+const ALIEN_BULLET_SPEED = 6;
+const MOTHERSHIP_SPEED = 5;
+const MAX_ROUNDS = 5;
+const PLAYER_LIVES = 3;
+const MOTHERSHIP_POINTS = 50;
+const STARTING_ROUND = 1;
 
 // Variables that need to be shared
 var gameState = {
