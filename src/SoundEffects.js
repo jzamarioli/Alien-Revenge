@@ -82,13 +82,12 @@ class SoundEffects {
         if (!this.enabled || !this.audioContext) return;
 
         const now = this.audioContext.currentTime;
+        const duration = 2.8; // Dramatic duration
 
-        // Create a longer, more dramatic explosion for player death
-        const bufferSize = this.audioContext.sampleRate * 0.8;
+        // 1. Noise Component (The Explosion)
+        const bufferSize = this.audioContext.sampleRate * duration;
         const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
         const data = buffer.getChannelData(0);
-
-        // Fill with white noise
         for (let i = 0; i < bufferSize; i++) {
             data[i] = Math.random() * 2 - 1;
         }
@@ -96,22 +95,49 @@ class SoundEffects {
         const noise = this.audioContext.createBufferSource();
         noise.buffer = buffer;
 
-        // Lower frequency filter for deeper sound
-        const filter = this.audioContext.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(2000, now);
-        filter.frequency.exponentialRampToValueAtTime(50, now + 0.8);
+        const noiseFilter = this.audioContext.createBiquadFilter();
+        noiseFilter.type = 'lowpass';
+        noiseFilter.frequency.setValueAtTime(1500, now);
+        noiseFilter.frequency.exponentialRampToValueAtTime(30, now + duration);
+        noiseFilter.Q.setValueAtTime(5, now); // Higher resonance for character
 
-        const gainNode = this.audioContext.createGain();
-        gainNode.gain.setValueAtTime(0.6, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+        // 2. Rumble Component (The Mechanical Failure)
+        const rumble = this.audioContext.createOscillator();
+        rumble.type = 'sawtooth';
+        rumble.frequency.setValueAtTime(60, now);
+        rumble.frequency.exponentialRampToValueAtTime(20, now + duration);
 
-        noise.connect(filter);
-        filter.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
+        const rumbleFilter = this.audioContext.createBiquadFilter();
+        rumbleFilter.type = 'lowpass';
+        rumbleFilter.frequency.setValueAtTime(100, now);
+
+        // 3. Crackle/Amplitude Modulation
+        const modulator = this.audioContext.createGain();
+        // Fast oscillation for crackle
+        for (let i = 0; i < duration * 20; i++) {
+            const t = now + (i / 20);
+            const val = Math.random() * 0.5 + 0.5; // Modulate between 0.5 and 1.0
+            modulator.gain.setValueAtTime(val, t);
+        }
+
+        const mainGain = this.audioContext.createGain();
+        mainGain.gain.setValueAtTime(0.7, now);
+        mainGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        // Connections
+        noise.connect(noiseFilter);
+        noiseFilter.connect(modulator);
+
+        rumble.connect(rumbleFilter);
+        rumbleFilter.connect(modulator);
+
+        modulator.connect(mainGain);
+        mainGain.connect(this.audioContext.destination);
 
         noise.start(now);
-        noise.stop(now + 0.8);
+        noise.stop(now + duration);
+        rumble.start(now);
+        rumble.stop(now + duration);
     }
 
     startShieldSound() {
