@@ -115,7 +115,7 @@ startGame();
 function spawnAliens() {
     aliens = [];
     const rows = 5;
-    const cols = 7;
+    const cols = gameState.round === 1 ? 5 : 7;
     const spacingX = 200; // Wider spacing
     const totalWidth = (cols - 1) * spacingX;
     const startX = (GAME_WIDTH - totalWidth) / 2;
@@ -423,9 +423,9 @@ function togglePause(mode) {
 
     if (gameState.state === 'PLAYING') {
         gameState.state = 'PAUSED';
-        // Stop alien movement sound when paused
+        // Stop all sounds when paused
         if (typeof soundEffects !== 'undefined') {
-            soundEffects.stopAlienMovementSound();
+            soundEffects.stopAllSounds();
         }
         if (mode === 'quit') {
             quitModal.classList.remove('hidden');
@@ -437,9 +437,12 @@ function togglePause(mode) {
         quitModal.classList.add('hidden');
         pauseModal.classList.add('hidden');
         gameState.lastTime = performance.now();
-        // Restart alien movement sound when unpaused
+        // Restart sounds when unpaused
         if (typeof soundEffects !== 'undefined') {
             soundEffects.startAlienMovementSound();
+            if (player && player.shieldActive) {
+                soundEffects.startShieldSound();
+            }
         }
         requestAnimationFrame(gameLoop);
     }
@@ -455,6 +458,11 @@ document.getElementById('cancel-quit-btn').addEventListener('click', () => {
 
 function nextRound() {
     gameState.state = 'ROUND_TRANSITION';
+
+    // Reset shield and stop its sound
+    if (player) {
+        player.resetShield();
+    }
 
     // Stop alien movement sound during transition
     if (typeof soundEffects !== 'undefined') {
