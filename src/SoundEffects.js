@@ -193,9 +193,10 @@ class SoundEffects {
         if (!this.enabled || !this.audioContext) return;
 
         const now = this.audioContext.currentTime;
+        const duration = 1.5; // Longer duration
 
-        // Create a special explosion for mothership (longer and deeper)
-        const bufferSize = this.audioContext.sampleRate * 0.6;
+        // Create a special explosion for mothership (longer and higher pitched)
+        const bufferSize = this.audioContext.sampleRate * duration;
         const buffer = this.audioContext.createBuffer(1, bufferSize, this.audioContext.sampleRate);
         const data = buffer.getChannelData(0);
 
@@ -207,27 +208,32 @@ class SoundEffects {
         const noise = this.audioContext.createBufferSource();
         noise.buffer = buffer;
 
-        // Lower frequency filter for special sound
+        // Higher frequency filter for "higher" sound
         const filter = this.audioContext.createBiquadFilter();
         filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(1500, now);
-        filter.frequency.exponentialRampToValueAtTime(80, now + 0.6);
+        filter.frequency.setValueAtTime(3000, now);
+        filter.frequency.exponentialRampToValueAtTime(150, now + duration);
 
         const gainNode = this.audioContext.createGain();
         gainNode.gain.setValueAtTime(0.55, now);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, now + duration);
 
         noise.connect(filter);
         filter.connect(gainNode);
         gainNode.connect(this.audioContext.destination);
 
         noise.start(now);
-        noise.stop(now + 0.6);
+        noise.stop(now + duration);
     }
 
     toggleAlienSound() {
         this.alienSoundEnabled = !this.alienSoundEnabled;
         return this.alienSoundEnabled;
+    }
+
+    stopAllSounds() {
+        this.stopAlienMovementSound();
+        this.stopShieldSound();
     }
 }
 
