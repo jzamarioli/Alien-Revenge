@@ -129,15 +129,8 @@ function spawnAliens() {
         let x = startX + col * spacingX;
         let y = 100 + row * 100;
 
-        // Custom formation for Round 4: 'V' shape & Vertical Shift
+        // Custom formation for Round 4: Inverted 'Y' shape
         if (gameState.round === 4) {
-            const centerCol = (cols - 1) / 2;
-            const vOffset = Math.abs(col - centerCol) * 80; // Offset increases with distance from center
-            y = (y + vOffset) * 0.8; // Move 20% higher (reducing Y by 20%)
-        }
-
-        // Custom formation for Round 5: Inverted 'Y' shape
-        if (gameState.round === 5) {
             const centerCol = (cols - 1) / 2;
             const centerX = startX + centerCol * spacingX;
             if (i < 10) {
@@ -152,6 +145,13 @@ function spawnAliens() {
                 x = centerX + side * depth * 80;
                 y = ((50 + 9 * 60) + depth * 50) * 0.5;
             }
+        }
+
+        // Custom formation for Round 5: 'V' shape & Vertical Shift
+        if (gameState.round === 5) {
+            const centerCol = (cols - 1) / 2;
+            const vOffset = Math.abs(col - centerCol) * 80; // Offset increases with distance from center
+            y = (y + vOffset) * 0.8; // Move 20% higher (reducing Y by 20%)
         }
 
         aliens.push(new Alien(x, y));
