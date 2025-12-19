@@ -3,7 +3,8 @@ class SoundEffects {
     constructor() {
         this.audioContext = null;
         this.enabled = true;
-        this.alienSoundEnabled = true; // Can be toggled by player
+        this.alienSoundEnabled = true;
+        this.sfxEnabled = true;
         this.initAudio();
     }
 
@@ -17,7 +18,7 @@ class SoundEffects {
     }
 
     playLaserSound() {
-        if (!this.enabled || !this.audioContext) return;
+        if (!this.enabled || !this.sfxEnabled || !this.audioContext) return;
 
         const now = this.audioContext.currentTime;
 
@@ -44,7 +45,7 @@ class SoundEffects {
     }
 
     playExplosionSound() {
-        if (!this.enabled || !this.audioContext) return;
+        if (!this.enabled || !this.sfxEnabled || !this.audioContext) return;
 
         const now = this.audioContext.currentTime;
 
@@ -79,7 +80,7 @@ class SoundEffects {
     }
 
     playPlayerDeathSound() {
-        if (!this.enabled || !this.audioContext) return;
+        if (!this.enabled || !this.sfxEnabled || !this.audioContext) return;
 
         const now = this.audioContext.currentTime;
         const duration = 2.8; // Dramatic duration
@@ -141,7 +142,7 @@ class SoundEffects {
     }
 
     startShieldSound() {
-        if (!this.enabled || !this.audioContext) return;
+        if (!this.enabled || !this.sfxEnabled || !this.audioContext) return;
         if (this.shieldOscillator) return; // Already playing
 
         // Create a higher frequency hum for the shield
@@ -216,7 +217,7 @@ class SoundEffects {
     }
 
     playMothershipExplosionSound() {
-        if (!this.enabled || !this.audioContext) return;
+        if (!this.enabled || !this.sfxEnabled || !this.audioContext) return;
 
         const now = this.audioContext.currentTime;
         const duration = 1.5; // Longer duration
@@ -254,7 +255,32 @@ class SoundEffects {
 
     toggleAlienSound() {
         this.alienSoundEnabled = !this.alienSoundEnabled;
+        if (!this.alienSoundEnabled) {
+            this.stopAlienMovementSound();
+        } else {
+            this.startAlienMovementSound();
+        }
         return this.alienSoundEnabled;
+    }
+
+    toggleSfx() {
+        this.sfxEnabled = !this.sfxEnabled;
+        if (!this.sfxEnabled) {
+            this.stopShieldSound();
+        }
+        return this.sfxEnabled;
+    }
+
+    toggleGlobalSound() {
+        this.enabled = !this.enabled;
+        if (!this.enabled) {
+            this.stopAllSounds();
+        } else {
+            if (this.alienSoundEnabled) {
+                this.startAlienMovementSound();
+            }
+        }
+        return this.enabled;
     }
 
     stopAllSounds() {
@@ -263,7 +289,7 @@ class SoundEffects {
     }
 
     playShieldCooldownSound() {
-        if (!this.enabled || !this.audioContext) return;
+        if (!this.enabled || !this.sfxEnabled || !this.audioContext) return;
 
         const now = this.audioContext.currentTime;
 

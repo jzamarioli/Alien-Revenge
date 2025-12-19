@@ -10,15 +10,40 @@ class InputHandler {
                     togglePause('quit');
                 } else if (e.code === 'KeyP') {
                     togglePause('pause');
-                } else if (e.code === 'KeyS') {
-                    // Toggle alien movement sound
+                } else if (e.code === 'KeyM') {
+                    // Toggle music (alien movement sound)
                     if (typeof soundEffects !== 'undefined') {
                         const enabled = soundEffects.toggleAlienSound();
                         const statusDiv = document.getElementById('sound-status');
                         if (statusDiv) {
-                            statusDiv.textContent = `Sound: ${enabled ? 'ON' : 'OFF'}`;
+                            statusDiv.textContent = `Music: ${enabled ? 'ON' : 'OFF'}`;
                             statusDiv.classList.remove('hidden');
-                            // Auto-hide after 2 seconds
+                            setTimeout(() => {
+                                statusDiv.classList.add('hidden');
+                            }, 2000);
+                        }
+                    }
+                } else if (e.code === 'KeyE') {
+                    // Toggle SFX
+                    if (typeof soundEffects !== 'undefined') {
+                        const enabled = soundEffects.toggleSfx();
+                        const statusDiv = document.getElementById('sound-status');
+                        if (statusDiv) {
+                            statusDiv.textContent = `Sound effects: ${enabled ? 'ON' : 'OFF'}`;
+                            statusDiv.classList.remove('hidden');
+                            setTimeout(() => {
+                                statusDiv.classList.add('hidden');
+                            }, 2000);
+                        }
+                    }
+                } else if (e.code === 'KeyS') {
+                    // Toggle All Sound
+                    if (typeof soundEffects !== 'undefined') {
+                        const enabled = soundEffects.toggleGlobalSound();
+                        const statusDiv = document.getElementById('sound-status');
+                        if (statusDiv) {
+                            statusDiv.textContent = `Master sound: ${enabled ? 'ON' : 'OFF'}`;
+                            statusDiv.classList.remove('hidden');
                             setTimeout(() => {
                                 statusDiv.classList.add('hidden');
                             }, 2000);

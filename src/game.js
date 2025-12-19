@@ -537,6 +537,9 @@ function nextRound() {
             setTimeout(() => {
                 spawnAliens();
                 gameState.state = 'PLAYING';
+                if (typeof soundEffects !== 'undefined') {
+                    soundEffects.startAlienMovementSound();
+                }
                 requestAnimationFrame(gameLoop);
             }, 3000);
         }, 4000);
