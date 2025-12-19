@@ -157,4 +157,13 @@ class Player {
         this.isReappearing = false;
         this.x = -1000; // Move away to be safe
     }
+
+    resetShield() {
+        this.shieldActive = false;
+        this.shieldTimer = 0;
+        this.shieldCooldownTimer = 0;
+        if (typeof soundEffects !== 'undefined') {
+            soundEffects.stopShieldSound();
+        }
+    }
 }
