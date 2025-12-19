@@ -33,6 +33,7 @@ function initGame() {
     aliens = [];
     alienBullets = [];
     explosions = [];
+    floatingTexts = [];
     mothership = null;
     gameState.mothershipTimer = 0;
     document.getElementById('high-score-display').classList.add('hidden'); // Hide during game
@@ -209,13 +210,14 @@ function checkCollisions() {
                 bullet.y > mothership.y && bullet.y < mothership.y + mothership.height) {
                 mothership.markedForDeletion = true;
                 bullet.markedForDeletion = true;
-                gameState.score += 50;
+                gameState.score += gameState.mothershipPoints;
                 explosions.push(new Explosion(mothership.x + mothership.width / 2, mothership.y + mothership.height / 2, 'red'));
                 // Play mothership explosion sound (different from regular aliens)
                 if (typeof soundEffects !== 'undefined') {
                     soundEffects.playMothershipExplosionSound();
                 }
                 updateScore();
+                floatingTexts.push(new FloatingText(mothership.x + mothership.width / 2, mothership.y + mothership.height / 2, `+${gameState.mothershipPoints}`));
                 mothership = null; // Immediate cleanup
             }
         }
@@ -362,6 +364,10 @@ function gameLoop(timestamp) {
             }
         });
 
+        // Floating Texts
+        floatingTexts.forEach(ft => ft.update(deltaTime));
+        floatingTexts = floatingTexts.filter(ft => !ft.markedForDeletion);
+
         // Remove dead aliens
         aliens = aliens.filter(a => !a.markedForDeletion);
 
@@ -399,6 +405,11 @@ function gameLoop(timestamp) {
         // Draw explosions
         explosions.forEach(exp => {
             exp.draw(ctx);
+        });
+
+        // Draw floating texts
+        floatingTexts.forEach(ft => {
+            ft.draw(ctx);
         });
 
         // Draw aliens
