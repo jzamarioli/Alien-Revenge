@@ -15,7 +15,7 @@ function loadImage(key, src) {
 
 function initGame() {
     gameState.score = 0;
-    gameState.round = 1;
+    gameState.round = gameState.round;
     gameState.lives = PLAYER_LIVES;
     updateScore();
     updateLives();
@@ -127,6 +127,14 @@ function spawnAliens() {
         let col = i % cols;
         let x = startX + col * spacingX;
         let y = 100 + row * 100;
+
+        // Custom formation for Round 4: 'V' shape
+        if (gameState.round === 4) {
+            const centerCol = (cols - 1) / 2;
+            const vOffset = Math.abs(col - centerCol) * 80; // Offset increases with distance from center
+            y += vOffset;
+        }
+
         aliens.push(new Alien(x, y));
     }
 }
