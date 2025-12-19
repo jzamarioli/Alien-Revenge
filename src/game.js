@@ -143,7 +143,7 @@ function spawnAliens() {
             const angle = (rayIndex / numRays) * Math.PI * 2;
             const distance = 120 + alienIndexOnRay * 110;
 
-            x = centerX + Math.cos(angle) * distance * 1.3 - 40; // 1.3x horizontal stretch, -40 centering
+            x = centerX + Math.cos(angle) * distance * 1.5 - 40; // 1.5x horizontal stretch, -40 centering
             y = centerY + Math.sin(angle) * distance - 40;
         }
 
