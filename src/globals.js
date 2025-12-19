@@ -9,13 +9,14 @@ var ALIEN_BULLET_SPEED = 6;
 var MOTHERSHIP_SPEED = 5;
 var MAX_ROUNDS = 5;
 var PLAYER_LIVES = 3;
+var STARTING_ROUND = 1;
 
 // Variables that need to be shared
 var gameState = {
     state: 'MENU',
     lives: PLAYER_LIVES,
     score: 0,
-    round: 1,
+    round: STARTING_ROUND,
     lastTime: 0,
     roundTimer: 0,
     messageTimer: 0,
