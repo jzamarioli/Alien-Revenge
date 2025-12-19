@@ -565,10 +565,7 @@ document.getElementById('start-btn').addEventListener('click', () => {
     requestAnimationFrame(gameLoop);
 });
 
-document.getElementById('quit-btn').addEventListener('click', () => {
-    alert("Thanks for playing!");
-    window.close(); // May not work in all browsers but standard for quit buttons web-games
-});
+
 
 // Init
 // requestAnimationFrame(gameLoop); // Don't start loop immediately, wait for start
