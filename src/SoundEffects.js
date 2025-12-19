@@ -302,7 +302,7 @@ class SoundEffects {
             oscillator.type = 'square';
             oscillator.frequency.setValueAtTime(1200, startTime);
 
-            gainNode.gain.setValueAtTime(0.06, startTime);
+            gainNode.gain.setValueAtTime(0.02, startTime);
             gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 0.05);
 
             oscillator.connect(gainNode);

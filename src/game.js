@@ -15,7 +15,7 @@ function loadImage(key, src) {
 
 function initGame() {
     gameState.score = 0;
-    gameState.round = gameState.round;
+    gameState.round = 1;
     gameState.lives = PLAYER_LIVES;
     updateScore();
     updateLives();
