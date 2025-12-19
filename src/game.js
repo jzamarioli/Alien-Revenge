@@ -118,13 +118,14 @@ function spawnAliens() {
     gameState.round4Offset = 0;
     gameState.round4Direction = 1;
     const rows = 5;
-    const cols = gameState.round === 1 ? 5 : 7;
+    const cols = gameState.round === 1 ? 6 : 7;
+    const numAliens = gameState.round === 1 ? 30 : 32;
     const spacingX = 200; // Wider spacing
     const totalWidth = (cols - 1) * spacingX;
     const startX = (GAME_WIDTH - totalWidth) / 2;
     const startY = 250;
 
-    for (let i = 0; i < 32; i++) {
+    for (let i = 0; i < numAliens; i++) {
         // Position in grid
         let row = Math.floor(i / cols);
         let col = i % cols;
