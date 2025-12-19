@@ -28,7 +28,9 @@ class Alien {
             // Simple movement pattern: elliptical/bobbing
             this.angle += 0.02 * (gameState.round) * timeScale;
             this.x = this.baseX + Math.sin(this.angle) * 200;
-            this.y = this.baseY + Math.cos(this.angle * 2) * 50;
+            // In Round 1, aliens move to right and left only (no vertical bobbing)
+            const verticalBob = (gameState.round === 1) ? 0 : Math.cos(this.angle * 2) * 50;
+            this.y = this.baseY + verticalBob;
 
             // Chance to dive (Round 3+)
             // Chance is per frame, so we should scale chance by time too? 
